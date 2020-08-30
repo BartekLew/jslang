@@ -1,0 +1,464 @@
+<html  ><head  ><title  >Language not deserving name ;)</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta property="og:image" content="NIL" /><style  type="text/css" >
+body {
+	background-color: #d0f0d0;
+	color: #000080
+}
+
+#art {
+	max-width: 75ex;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:5em;
+	margin-bottom: 4em;
+	font-size: 14pt
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 2em;
+	font-size: 2em
+}
+
+h2 {
+	margin-top: 2em;
+	font-size: 1.5em;
+	font-weight: 700
+}
+
+p {
+	line-height: 1.4;
+	text-indent: 1em;
+	margin-top: 0px
+}
+
+#footer {
+	font-size: 0.9em;
+	color: #008040;
+	text-align:center;
+	margin-bottom: 2em
+}
+
+a {
+	color: inherit;
+	font-size: inherit
+}
+
+code {
+	word-break: break-any;
+	font-family: monospace;
+	color: #f0e0f0;
+	font-size: 0.7em;
+	padding: 2em;
+	display: block;
+	background-color: #101010;
+	margin-top: 2em;
+	font-weight:100;
+	margin-bottom: 2em
+}
+
+pre {
+	margin-bottom: 0px;
+	padding: 0px
+}
+
+.inline-code {
+	font-family: monospace;
+	font-size:0.9em;
+	font-weight: 600
+}
+
+audio {
+	width:50%;
+	margin-left: 25%;
+	margin-top: 1em;
+	margin-bottom: 2em
+}
+
+#toc {
+	margin-top: 2em;
+	margin-bottom: 3em
+}
+
+h3 {
+	margin-bottom: 0.5em;
+	margin-top: 1.5em
+}
+
+ol {
+	margin-top: 0px
+}
+
+#arts-list {
+	margin-top: 1.5em
+}
+
+.art-date {
+	font-size: 0.8em;
+	font-style: italic
+}
+
+.docs-item {
+	margin-left: 1em;
+	margin-right: 1em;
+	margin-bottom:0.5em;
+	text-align: center
+}
+
+img {
+	max-width:80%;
+	margin: 1em 10%
+}
+
+.poem-block {
+	text-align: center;
+	text-style: italic;
+	margin-bottom: 1em
+}
+
+#header {
+	text-align: center
+}
+
+#closing {
+	text-align: center;
+	margin-bottom: 2em
+}
+
+ul {
+	list-style-type: none;
+	padding: 0.4em;
+	margin: 0em
+}
+</style></head><body  ><div  id="art" ><h1  >Language not deserving name ;)</h1><p  >A sample language, I've been developing for educational purposes.
+We have programmable drawing space, we are drawing some shapes.</p><script  type="text/javascript" >function ser(tree){if (!(Array.isArray(tree))) {return tree;}else {var nodes = tree.map(ser);return ("("+nodes.join(",")+")");}
+}
+
+function mapshape(fn, shape){return shape.map(function (ln){return ln.map(fn);}
+
+);}
+
+function reduceshape(fn, shape, initial){if (typeof initial == "undefined") {initial = 0;}
+return shape.reduce(function (acc, ln){return ln.reduce(fn,acc);}
+
+,initial);}
+
+function splitarr(test, arr){var ans = [];var last = [];for(var i in arr) { if (test(arr[i])) {ans.push(last);last = [];}else {last.push(arr[i]);}
+ }ans.push(last);return ans;}
+
+function lndn(){var vm = {};function printToks(arr, idx, all){if ((arguments.length < 1 || arguments.length > 3)) {throw ("Wrong arguments count: "+"print-toks"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+var lastp = 0;return arr.map(function (x){if (x[0] == 15) {return ser(x[1]);}
+if (((lastp > 8 && x[0] > 8) || (lastp > 8 && x[0] == 6) || (lastp == 7 && x[0] > 8))) {lastp = x[0];return (" "+x[1]);}else {lastp = x[0];return x[1];}
+}
+
+).join("");}
+
+vm.printToks = printToks;var builtins = {};builtins["move"] = function (form, offset){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins move)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(form))) {throw ("Argument is not list: "+form);}
+if (!(Array.isArray(offset))) {throw ("Argument nie jest listą: "+offset);}
+offset.map(function (x){if (!(typeof x == "number")) {throw ("Wrong list element type (only numbers allowed): "+x);}
+}
+
+);if (offset.length != 2) {throw ("Wrong list length:"+"offset");}
+if ((form.length == 2 && !(Array.isArray(form[0])) && !(Array.isArray(form[1])))) {return [(form[0]+offset[0]),(form[1]+offset[1])];}
+return form.map(function (x){return builtins.move(x,offset);}
+
+);}
+
+;builtins["rotate"] = function (form, angleDeg, base){if ((arguments.length < 2 || arguments.length > 3)) {throw ("Wrong arguments count: "+"(builtins rotate)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(form))) {throw ("Argument is not list: "+form);}
+if (!(typeof angleDeg == "number")) {throw ("Argument is not number: "+"angle-deg");}
+if (!(typeof base == "undefined")) {if (!(Array.isArray(base))) {throw ("Argument nie jest listą: "+base);}
+base.map(function (x){if (!(typeof x == "number")) {throw ("Wrong list element type (only numbers allowed): "+x);}
+}
+
+);if (base.length != 2) {throw ("Wrong list length:"+"base");}
+}
+var angle = ((Math.PI*angleDeg)/180);if ((form.length == 2 && typeof form[0] == "number")) {if (typeof base == "undefined") {throw "Parameter #3 is required when rotating points.";}
+if (!((typeof form[0] == "number" && typeof form[1] == "number"))) {throw ("Wrong argument for rotate function: "+printToks(form));}
+var x = (form[0]-base[0]);var y = (form[1]-base[1]);return [(((x*Math.cos(angle))-(y*Math.sin(angle)))+base[0]),((x*Math.sin(angle))+(y*Math.cos(angle))+base[1])];}
+if (typeof base == "undefined") {base = reduceshape(function (a, v){return [(a[0]+v[0]),(a[1]+v[1])];}
+
+,form,[0,0]);var total = form.reduce(function (a, v){return (a+v.length);}
+
+,0);base[0] = (base[0]/total);base[1] = (base[1]/total);}
+return mapshape(function (p){var x = (p[0]-base[0]);var y = (p[1]-base[1]);return [(((x*Math.cos(angle))-(y*Math.sin(angle)))+base[0]),((x*Math.sin(angle))+(y*Math.cos(angle))+base[1])];}
+
+,form);}
+
+;builtins["list"] = function (){if (arguments.length < 0) {throw ("Wrong arguments count: "+"(builtins list)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+var args = Object.keys(arguments).map(x => arguments[x]).slice(0);return args;}
+
+;builtins["map"] = function (fn, lst){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins map)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(typeof fn == "function")) {throw ("Argument is not function: "+"fn");}
+if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
+return lst.map(fn);}
+
+;builtins["seq"] = function (n){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins seq)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(typeof n == "number")) {throw ("Argument is not number: "+"n");}
+var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
+
+;vm.lex = function (src){var tokDefs = [function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!((_ == " " || _ == "\t" || _ == "\n"))) {return i;}
+ }return src.length;}
+
+,function (src){if (src.slice(0,1) == "{") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == "}") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == ";") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == "=") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,2) == "->") {return 2;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == "(") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == ")") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == ",") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == "+") {return 1;}else {return 0;}
+}
+
+,function (src){if (src.slice(0,1) == "-") {return 1;}else {return 0;}
+}
+
+,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!((_ == "*" || _ == "/"))) {return i;}
+ }return src.length;}
+
+,function (src){if (src.slice(0,1) == "^") {return 1;}else {return 0;}
+}
+
+,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!(_.toUpperCase() != _.toLowerCase())) {return i;}
+ }return src.length;}
+
+,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!((_ >= "0" && _ <= "9"))) {return i;}
+ }return src.length;}
+
+,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!(typeof _ == "undefined")) {return i;}
+ }return src.length;}
+
+];var acc = [];while (src.length > 0) {var found = 0;for(var tok in tokDefs) { var len = tokDefs[tok](src);if (len > 0) {acc.push([tok,src.slice(0,len)]);src = src.slice(len);found = 1;break;}
+ }if (found == 0) {throw ("Unknown element starting: "+src.slice(0,10));}
+}return acc;}
+
+;vm.opstack = [[0,function (toks, opstack, vars){return opstack[1][1](toks.filter(function (x){return x[0] != opstack[0][0];}
+
+),opstack.slice(1),vars);}
+
+],[1,function (toks, opstack, vars){return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[2,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var splitOnLast = function (toks, cls){for(var i = (toks.length-1); i>=0; i--) { if (toks[i][0] == cls) {return [toks.slice(0,i),toks.slice((i+1))];}
+ }}
+
+;var bracket = splitOnLast(before,1);var merge = function (value){return before.concat([[15,value]],after);}
+
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];return self(merge(pass(bracket)));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
+}
+ }toks.map(function (x){if (x[0] == 1) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
+}
+
+);return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[3,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));pass(before);return self(after);}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[4,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));if ((before.length != 1 || before[0][0] != 13)) {throw ("Name expected, found: "+printToks(before));}
+if (!(typeof vars[before[0][1]] == "undefined")) {throw ("Overriding variable forbidden: "+printToks(toks));}
+vars[before[0][1]] = pass(after);return after;}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[5,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));before.map(function (x){if (x[0] != 13) {throw ("Wrong argument list: "+printToks(before));}
+}
+
+);return function (){var args = {};for(var i in before) { args[before[i][1]] = arguments[i]; }return opstack[1][1](after,opstack.slice(1),Object.assign({}, vars,args));}
+
+;}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[6,function (toks, opstack, vars){return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[7,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var splitOnLast = function (toks, cls){for(var i = (toks.length-1); i>=0; i--) { if (toks[i][0] == cls) {return [toks.slice(0,i),toks.slice((i+1))];}
+ }}
+
+;var bracket = splitOnLast(before,6);var merge = function (value){return before.concat([[15,value]],after);}
+
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];var ans = pass(bracket);if ((bracket.length == 1 && bracket[0][0] == 15)) {ans = [ans];}
+return self(merge(ans));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
+}
+ }toks.map(function (x){if (x[0] == 6) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
+}
+
+);return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[8,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
+if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
+if ((i == 1 && toks[0][0] == 15)) {return [before,after];}
+if (Array.isArray(before)) {before.push(after);return before;}else {return [before,after];}
+}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[9,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
+if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
+var atyp = Array.isArray(before);var btyp = Array.isArray(after);if ((atyp && btyp)) {return before.concat(after);}
+if (!((atyp || btyp))) {return (before+after);}
+throw ("Conflicting types: "+printToks(toks));}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[10,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
+if (typeof before == "undefined") {return (-after);}else {return (before-after);}
+}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[11,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
+if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
+return eval((before+toks[i][1]+after));}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[12,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
+if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
+return Math.pow(before,after);}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[13,function (toks, opstack, vars){var self = function (tok){if (Array.isArray(tok)) {return opstack[0][1]([tok],opstack,vars);}
+}
+
+;if (toks[0][0] == opstack[0][0]) {var varval = vars[toks[0][1]];if (typeof varval == "undefined") {throw ("Undefined function or variable: "+toks[0][1]);}
+if (toks.length == 1) {return varval;}else {return varval.apply(varval,toks.slice(1).map(self));}
+}else {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+],[14,function (toks, opstack, vars){if (toks[0][0] == opstack[0][0]) {if (toks.length != 1) {throw ("Excessive tokens (value expected): "+printToks(toks));}
+return parseInt(toks[0][1]);}
+return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[15,function (toks, opstack, vars){if (toks.length > 1) {throw ("Excessive tokens (value expected): "+printToks(toks));}
+return toks[0][1];}
+
+]];vm.eval = function (code, vars){if (typeof vars == "undefined") {vars = {};}
+var toks = vm.lex(code);vars = Object.assign({}, builtins,vars);return vm.opstack[0][1](toks,vm.opstack,vars);}
+
+;return vm;}
+
+</script><div  style="width:100%; text-align: center;" ><script  type="text/javascript" >function onload_canvas_1(event){var x = document.getElementById("canvas_1");x.style.width = "100%";x.width = x.offsetWidth;x.height = (x.width*0.6);x.cpath = [];var writingLock = 0;x.lndn = lndn();var reloadAct = function (){writingLock++;setTimeout(function (){if (writingLock-- > 1) {return 0;}
+try { var startTime = new Date().getTime();var ans = x.lndn.eval(x.src.value);if (typeof ans == "undefined") {throw "...?";}else {x.log = ans;}
+x.refresh();x.status.innerText = ("OK ("+(new Date().getTime()-startTime)+"ms)"); } catch(exception) { x.status.innerText = exception; }}
+
+,1000);}
+
+;var refreshAct = function (){var ctx = x.getContext("2d");ctx.fillStyle = "#ffffff";ctx.fillRect(0,0,x.width,x.height);for(var i=0; i < x.log.length; i++) { for(var j=0; j < (x.log[i].length-1); j++) { var ctx = x.getContext("2d");
+ctx.beginPath();
+ctx.lineWidth = 5;
+ctx.moveTo(x.log[i][j][0],x.log[i][j][1]);
+ctx.lineTo(x.log[i][j+1][0],x.log[i][j+1][1]);
+ctx.stroke();
+ctx.beginPath();
+ctx.fillStyle = "#000000";
+ctx.arc(x.log[i][j][0],x.log[i][j][1],5/2,0,(2*Math.PI));
+ctx.fill(); } }}
+
+;setTimeout(function (){x.log = [];x.src = document.getElementById((x.id+"_source"));x.src.onpaste = reloadAct;x.src.onkeydown = reloadAct;x.src.scrollTop = x.src.scrollHeight;x.refresh = refreshAct;reloadAct();x.status = document.getElementById((x.id+"_status"));}
+
+,10);}
+
+function onmousedown_canvas_1(event){var canvas = document.getElementById("canvas_1");var canvas = canvas;
+var ctx = canvas.getContext("2d");
+var pixelData = ctx.getImageData(0,0,canvas.width,canvas.height);
+var pixels = pixelData.data;
+pixels[(4*((event.offsetY*canvas.width)+event.offsetX))] = 0;
+pixels[((4*((event.offsetY*canvas.width)+event.offsetX))+1)] = 0;
+pixels[((4*((event.offsetY*canvas.width)+event.offsetX))+2)] = 0;
+pixels[((4*((event.offsetY*canvas.width)+event.offsetX))+3)] = 255;
+ctx.putImageData(pixelData,0,0);canvas.cpath.push([event.offsetX,event.offsetY]);canvas.lastX = event.offsetX;canvas.lastY = event.offsetY;}
+
+function onmousemove_canvas_1(event){var canvas = document.getElementById("canvas_1");if (event.buttons == 1) {canvas.cpath.push([event.offsetX,event.offsetY]);var ctx = canvas.getContext("2d");
+ctx.beginPath();
+ctx.lineWidth = 5;
+ctx.moveTo(canvas.lastX,canvas.lastY);
+ctx.lineTo(canvas.lastX = event.offsetX,canvas.lastY = event.offsetY);
+ctx.stroke();
+ctx.beginPath();
+ctx.fillStyle = "#000000";
+ctx.arc(canvas.lastX,canvas.lastY,5/2,0,(2*Math.PI));
+ctx.fill();}
+}
+
+function onmouseup_canvas_1(event){var x = document.getElementById("canvas_1");x.log.push(x.cpath);try { var code = x.lndn.lex(x.src.value);code = code.filter(function (x){return x[0] != 0;}
+
+);code = splitarr(function (x){return x[0] == 3;}
+
+,code);var found = 0;for(var i in code) { if ((code[i][0][0] == 13 && code[i][0][1] == "MANUAL" && code[i][1][0] == 4)) {found = 1;code[i] = code[i].concat(x.lndn.lex(("+"+ser([x.cpath]))));}
+ }if (!(found == 1)) {code.unshift(x.lndn.lex(("MANUAL="+ser([x.cpath]))));code[(code.length-1)] = code[(code.length-1)].concat(x.lndn.lex("+MANUAL"));}
+console.log(code);code = code.map(x.lndn.printToks);x.src.value = code.join(";\n"); } catch(exception) { throw ("Unable to override code: "+exception); }x.cpath = [];}
+
+</script><canvas  id="canvas_1" style="background-color:#ffffff;margin-top:0.5em;margin-bottom:0.5em;" onload="onload_canvas_1(event)" onmousedown="onmousedown_canvas_1(event)" onmousemove="onmousemove_canvas_1(event)" onmouseup="onmouseup_canvas_1(event)" >Error: no canvas support!</canvas><script  >onload_canvas_1(0);</script><div  id="canvas_1_status" style="font-size:0.8em" >Javascript doesn't work!</div><textarea  style="width:100%; height: 15em;
+                                                     margin-bottom:1em" id="canvas_1_source" >list
+  (map {x -> rotate (350,150) (x * 6) (350,250)}
+         (seq 61))</textarea></div><p  >Available builtin functions:</p><ul  style="margin-left: 2ex" ><li  style="margin-bottom: 0.5em" ><span class="inline-code" >move point/shape vector</span> — move in space</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >rotate point/shape angle [base]</span> — rotate <span class="inline-code" >point/shape</span> by <span class="inline-code" >angle</span> (degrees) around <span class="inline-code" >base</span> point. If shape, <span class="inline-code" >base</span> is optional</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >map function list</span> — standard map function</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >seq limit</span> — return all non-negative integers smaller than <span class="inline-code" >limit</span></li></ul></div><div  id="footer" ><span style="display:inline-block; transform:rotate(180deg)" >&copy;</span>Lew 2020<br/><a href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a></div></body></html>

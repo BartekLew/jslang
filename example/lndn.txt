@@ -1,0 +1,23 @@
+Language not deserving name ;)
+==============================
+
+A sample language, I've been developing for educational purposes.
+We have programmable drawing space, we are drawing some shapes.
+
+@@@
+(use "../jslang.cl")
+(use "lndn.cl")
+
+(lndn-vm "list
+  (map {x -> rotate (350,150) (x * 6) (350,250)}
+         (seq 61))")
+@@@
+
+Available builtin functions:
+
+@@@
+(ul "`move point/shape vector` — move in space"
+    "`rotate point/shape angle [base]` — rotate `point/shape` by `angle` (degrees) around `base` point. If shape, `base` is optional"
+    "`map function list` — standard map function"
+    "`seq limit` — return all non-negative integers smaller than `limit`")
+@@@
