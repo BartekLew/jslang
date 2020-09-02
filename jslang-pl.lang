@@ -6,4 +6,6 @@
  (type-conflict "Niezgodność typów:")
  (ve-in "' w: ")
  (missing-brack-opn "Zamknięcie nawiasu bez otwarcia: ")
- (missing-brack-cls "Niezamknięty nawias: "))
+ (missing-brack-cls "Niezamknięty nawias: ")
+ (wrong-arr-argv "Błędny wybór wartości z listy: ")
+ (wrong-expr "Błędne wyrażenie: "))

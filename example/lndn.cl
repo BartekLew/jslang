@@ -12,8 +12,9 @@
                                          (if (not (undef? vars[before[0][1]]))
                                              ((throw (+  ,(txt 'var-override)
                                                          (print-toks toks)))))
-                                         (= (@[] vars before[0][1]) (pass after))
-                                         (return after))))
+                                         (let ans (pass after))
+                                         (= (@[] vars before[0][1]) ans)
+                                         (return ans))))
                 (lambda (== _ "->") ,(langgenop
                                        `((before.map (fun nil (x)
                                                        (if (!= x[0] word)
@@ -35,18 +36,8 @@
                                                     (== bracket[0][0] literal))
                                               ((= ans (list ans))))
                                            (return (self (merge ans))))))
-                (cons (== _ ",") ,(langop '(;if first element is embedded list
-                                          ;i.e. put in parenthesis
-                                          (if (and (== i 1)
-                                                   (== toks[0][0] literal))
-                                              ((return (list before after))))
-  
-                                          ;else, simple work
-                                          (if (array? before)
-                                              ((before.push after)
-                                               (return before))
-                                              ((return (list before after)))))))
-                (plus (== _ "+") ,(langop `((let atyp (array? before))
+                (cons (== _ ",") ,(langlist))
+		(plus (== _ "+") ,(langop `((let atyp (array? before))
                                           (let btyp (array? after))
                                           (if (and atyp btyp)
                                               ((return (before.concat after))))

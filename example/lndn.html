@@ -290,7 +290,7 @@ var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
 
 ;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));if ((before.length != 1 || before[0][0] != 13)) {throw ("Name expected, found: "+printToks(before));}
 if (!(typeof vars[before[0][1]] == "undefined")) {throw ("Overriding variable forbidden: "+printToks(toks));}
-vars[before[0][1]] = pass(after);return after;}
+var ans = pass(after);vars[before[0][1]] = ans;return ans;}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
 
 ],[5,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
@@ -328,18 +328,12 @@ return self(merge(ans));}else {throw ("Missing bracket opening: "+printToks(toks
 
 );return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[8,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+],[8,function (toks, opstack, vars){var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
 }
 
-;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
-}
-
-;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
-if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
-if ((i == 1 && toks[0][0] == 15)) {return [before,after];}
-if (Array.isArray(before)) {before.push(after);return before;}else {return [before,after];}
-}
- }return opstack[1][1](toks,opstack.slice(1),vars);}
+;var acc = [];var nexte = [];for(var i in toks) { if (toks[i][0] == opstack[0][0]) {acc.push(nexte);nexte = [];}else {nexte.push(toks[i]);}
+ }if (acc.length > 0) {acc.push(nexte);return acc.map(pass);}
+return opstack[1][1](toks,opstack.slice(1),vars);}
 
 ],[9,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
 }
@@ -391,9 +385,13 @@ return Math.pow(before,after);}
 }
 
 ;if (toks[0][0] == opstack[0][0]) {var varval = vars[toks[0][1]];if (typeof varval == "undefined") {throw ("Undefined function or variable: "+toks[0][1]);}
-if (toks.length == 1) {return varval;}else {return varval.apply(varval,toks.slice(1).map(self));}
-}else {return opstack[1][1](toks,opstack.slice(1),vars);}
+if (toks.length == 1) {return varval;}
+if (typeof varval == "function") {return varval.apply(varval,toks.slice(1).map(self));}
+if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){return a[self(v)];}
+
+,varval); } catch(exception) { throw("Wrong list element selection: "+printToks(toks)) }}else {throw ("Wrong expression"+printToks(toks));}
 }
+return opstack[1][1](toks,opstack.slice(1),vars);}
 
 ],[14,function (toks, opstack, vars){if (toks[0][0] == opstack[0][0]) {if (toks.length != 1) {throw ("Excessive tokens (value expected): "+printToks(toks));}
 return parseInt(toks[0][1]);}

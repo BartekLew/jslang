@@ -6,4 +6,6 @@
  (type-conflict "Conflicting types: ")
  (ve-in "' in: ")
  (missing-brack-opn "Missing bracket opening: ")
- (missing-brack-cls "Unclosed bracket: "))
+ (missing-brack-cls "Unclosed bracket: ")
+ (wrong-arr-argv "Wrong list element selection: ")
+ (wrong-expr "Wrong expression"))
