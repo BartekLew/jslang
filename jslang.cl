@@ -59,6 +59,7 @@
   
                     (let toks (vm.lex code))
                     (= vars (hashcat builtins vars))
+                    (= (@[] vars "!opstack") vm.opstack)
   
                     (return (vm.opstack[0][1] toks vm.opstack vars))))
       (return vm)))
@@ -93,6 +94,16 @@
         ((throw (+ ,(txt 'too-many-args)
                    (print-toks toks)))))
      (return toks[0][1])))
+
+(defun langeval ()
+  `(fun nil (toks opstack vars)
+     (if (not (== toks[0][0] opstack[0][0]))
+       ((return (opstack[1][1] toks (opstack.slice 1) vars))))
+     (if (!= toks.length 1)
+       ((throw (+ ,(txt 'too-many-args)
+                  (print-toks toks)))))
+     (let stack (@[] vars "!opstack"))
+     (return (stack[0][1] toks[0][1] stack vars))))
 
 (defun langnum ()
   `(fun nil (toks opstack vars)
@@ -214,9 +225,11 @@
                     ((return (list (toks.slice 0 i)
                                    (toks.slice (+ i 1)))))))))
       (let bracket (split-on-last before ,opener))
-      (let merge (fun nil (value)
+      (let merge (fun nil (value type)
+                    (if (undef? type)
+                        ((= type literal)))
                     (return (before.concat
-                                (list (list literal value))
+                                (list (list type value))
                                 after))))
       (if (not (undef? bracket))
          ((= before bracket[0])

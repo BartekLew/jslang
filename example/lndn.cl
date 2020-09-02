@@ -1,7 +1,8 @@
 (defun lndn-vm (initial) 
   (let ((toks `((space ,(js-in-set? '_ " " "\\t" "\\n") ,(langignore))
                 (block-opn (== _ "{") ,(langskip))
-                (block-cls (== _ "}") ,(langbrack 'block-opn))
+                (block-cls (== _ "}") ,(langbrack 'block-opn
+                                         `((return (self (merge bracket code-block))))))
                 (stop (== _ ";") ,(langgenop '((pass before)
                                            (return (self after)))))
                 (eql (== _ "=") ,(langgenop 
@@ -55,6 +56,7 @@
                       ,(langop `((return (^ before after)))))
                 (word (!= (_.to-upper-case) (_.to-lower-case)) ,(langcall))
                 (number ,(js-range '_ "0" "9") ,(langnum))
+                (code-block (undef? _) ,(langeval))
                 (literal (undef? _) ,(langliteral)))))
 
     (defun putox (tree)
@@ -69,6 +71,10 @@
            '(fun mapshape (fn shape)
                (return (shape.map (fun nil (ln)
                                     (return (ln.map fn))))))
+
+           '(fun trace (x)
+               (console.log (json x))
+               (return x))
 
            '(fun reduceshape (fn shape initial)
               (if (undef? initial)

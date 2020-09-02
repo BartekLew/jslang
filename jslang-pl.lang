@@ -1,5 +1,5 @@
 ((unknown-element "Nieznany element zaczynający się: ")
- (too-many-args "Nadmiarowe elementy (oczekiwano wartości): ")
+ (too-many-args "Nadmiarowe elementy: ")
  (var-undefined "Niezdefiniowana zmienna lub funkcja: ")
  (val-expected-bfr" "Oczekiwano wartości przed '")
  (val-expected-aftr "Oczekiwano wartości po '")

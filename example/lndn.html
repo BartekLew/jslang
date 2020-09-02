@@ -137,6 +137,8 @@ function mapshape(fn, shape){return shape.map(function (ln){return ln.map(fn);}
 
 );}
 
+function trace(x){console.log(JSON.stringify(x));return x;}
+
 function reduceshape(fn, shape, initial){if (typeof initial == "undefined") {initial = 0;}
 return shape.reduce(function (acc, ln){return ln.reduce(fn,acc);}
 
@@ -146,7 +148,7 @@ function splitarr(test, arr){var ans = [];var last = [];for(var i in arr) { if (
  }ans.push(last);return ans;}
 
 function lndn(){var vm = {};function printToks(arr, idx, all){if ((arguments.length < 1 || arguments.length > 3)) {throw ("Wrong arguments count: "+"print-toks"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
-var lastp = 0;return arr.map(function (x){if (x[0] == 15) {return ser(x[1]);}
+var lastp = 0;return arr.map(function (x){if (x[0] == 16) {return ser(x[1]);}
 if (((lastp > 8 && x[0] > 8) || (lastp > 8 && x[0] == 6) || (lastp == 7 && x[0] > 8))) {lastp = x[0];return (" "+x[1]);}else {lastp = x[0];return x[1];}
 }
 
@@ -245,6 +247,9 @@ var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
 ,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!(typeof _ == "undefined")) {return i;}
  }return src.length;}
 
+,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!(typeof _ == "undefined")) {return i;}
+ }return src.length;}
+
 ];var acc = [];while (src.length > 0) {var found = 0;for(var tok in tokDefs) { var len = tokDefs[tok](src);if (len > 0) {acc.push([tok,src.slice(0,len)]);src = src.slice(len);found = 1;break;}
  }if (found == 0) {throw ("Unknown element starting: "+src.slice(0,10));}
 }return acc;}
@@ -264,9 +269,10 @@ var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
 ;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var splitOnLast = function (toks, cls){for(var i = (toks.length-1); i>=0; i--) { if (toks[i][0] == cls) {return [toks.slice(0,i),toks.slice((i+1))];}
  }}
 
-;var bracket = splitOnLast(before,1);var merge = function (value){return before.concat([[15,value]],after);}
+;var bracket = splitOnLast(before,1);var merge = function (value, type){if (typeof type == "undefined") {type = 16;}
+return before.concat([[type,value]],after);}
 
-;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];return self(merge(pass(bracket)));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];return self(merge(bracket,15));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
 }
  }toks.map(function (x){if (x[0] == 1) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
 }
@@ -318,9 +324,10 @@ var ans = pass(after);vars[before[0][1]] = ans;return ans;}
 ;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var splitOnLast = function (toks, cls){for(var i = (toks.length-1); i>=0; i--) { if (toks[i][0] == cls) {return [toks.slice(0,i),toks.slice((i+1))];}
  }}
 
-;var bracket = splitOnLast(before,6);var merge = function (value){return before.concat([[15,value]],after);}
+;var bracket = splitOnLast(before,6);var merge = function (value, type){if (typeof type == "undefined") {type = 16;}
+return before.concat([[type,value]],after);}
 
-;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];var ans = pass(bracket);if ((bracket.length == 1 && bracket[0][0] == 15)) {ans = [ans];}
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];var ans = pass(bracket);if ((bracket.length == 1 && bracket[0][0] == 16)) {ans = [ans];}
 return self(merge(ans));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
 }
  }toks.map(function (x){if (x[0] == 6) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
@@ -393,15 +400,19 @@ if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){re
 }
 return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[14,function (toks, opstack, vars){if (toks[0][0] == opstack[0][0]) {if (toks.length != 1) {throw ("Excessive tokens (value expected): "+printToks(toks));}
+],[14,function (toks, opstack, vars){if (toks[0][0] == opstack[0][0]) {if (toks.length != 1) {throw ("Excessive tokens: "+printToks(toks));}
 return parseInt(toks[0][1]);}
 return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[15,function (toks, opstack, vars){if (toks.length > 1) {throw ("Excessive tokens (value expected): "+printToks(toks));}
+],[15,function (toks, opstack, vars){if (!(toks[0][0] == opstack[0][0])) {return opstack[1][1](toks,opstack.slice(1),vars);}
+if (toks.length != 1) {throw ("Excessive tokens: "+printToks(toks));}
+var stack = vars["!opstack"];return stack[0][1](toks[0][1],stack,vars);}
+
+],[16,function (toks, opstack, vars){if (toks.length > 1) {throw ("Excessive tokens: "+printToks(toks));}
 return toks[0][1];}
 
 ]];vm.eval = function (code, vars){if (typeof vars == "undefined") {vars = {};}
-var toks = vm.lex(code);vars = Object.assign({}, builtins,vars);return vm.opstack[0][1](toks,vm.opstack,vars);}
+var toks = vm.lex(code);vars = Object.assign({}, builtins,vars);vars["!opstack"] = vm.opstack;return vm.opstack[0][1](toks,vm.opstack,vars);}
 
 ;return vm;}
 
