@@ -10,4 +10,5 @@
  (fun-rotate obróć)
  (fun-list lista)
  (fun-map mapuj)
- (fun-seq odlicz))
+ (fun-seq odlicz)
+ (value-returned "Zwrócono wartość (nie kształt): "))

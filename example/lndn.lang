@@ -10,4 +10,5 @@
  (fun-rotate rotate)
  (fun-list list)
  (fun-map map)
- (fun-seq seq))
+ (fun-seq seq)
+ (value-returned "Value returned (instead of shape): "))

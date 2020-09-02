@@ -178,8 +178,17 @@
                                                      ((let start-time (now))
                                                       (let ans (x.lndn.eval x.src.value))
                                                       (if (undef? ans)
-                                                        ((throw "...?"))
-                                                        ((= x.log ans)))
+                                                        ((throw "...?")))
+                                                      (try
+                                                        ((ans.map (fun nil (stroke)
+                                                                    (stroke.map (fun nil (pt)
+                                                                              (if (not (and (== pt.length 2)
+                                                                                            (number? pt[0])
+                                                                                            (number? pt[1])))
+                                                                                 ((throw "Bad point"))))))))
+                                                        ((throw (+ ,(txt 'value-returned) (ser ans)))))
+                                                                   
+                                                      (= x.log ans)
                                                       (x.refresh)
                                                       (= x.status.inner-text (+ "OK ("
                                                                                 (- (now) start-time)

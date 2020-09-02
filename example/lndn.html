@@ -406,8 +406,13 @@ var toks = vm.lex(code);vars = Object.assign({}, builtins,vars);return vm.opstac
 ;return vm;}
 
 </script><div  style="width:100%; text-align: center;" ><script  type="text/javascript" >function onload_canvas_1(event){var x = document.getElementById("canvas_1");x.style.width = "100%";x.width = x.offsetWidth;x.height = (x.width*0.6);x.cpath = [];var writingLock = 0;x.lndn = lndn();var reloadAct = function (){writingLock++;setTimeout(function (){if (writingLock-- > 1) {return 0;}
-try { var startTime = new Date().getTime();var ans = x.lndn.eval(x.src.value);if (typeof ans == "undefined") {throw "...?";}else {x.log = ans;}
-x.refresh();x.status.innerText = ("OK ("+(new Date().getTime()-startTime)+"ms)"); } catch(exception) { x.status.innerText = exception; }}
+try { var startTime = new Date().getTime();var ans = x.lndn.eval(x.src.value);if (typeof ans == "undefined") {throw "...?";}
+try { ans.map(function (stroke){stroke.map(function (pt){if (!((pt.length == 2 && typeof pt[0] == "number" && typeof pt[1] == "number"))) {throw "Bad point";}
+}
+
+);}
+
+); } catch(exception) { throw ("Value returned (instead of shape): "+ser(ans)); }x.log = ans;x.refresh();x.status.innerText = ("OK ("+(new Date().getTime()-startTime)+"ms)"); } catch(exception) { x.status.innerText = exception; }}
 
 ,1000);}
 
