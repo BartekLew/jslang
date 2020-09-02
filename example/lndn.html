@@ -195,6 +195,11 @@ if (!(typeof fn == "function")) {throw ("Argument is not function: "+"fn");}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
 return lst.map(fn);}
 
+;builtins["insert"] = function (lst, i, x){if (arguments.length != 3) {throw ("Wrong arguments count: "+"(builtins insert)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
+if (!(typeof i == "number")) {throw ("Argument is not number: "+"i");}
+return lst.slice(0,i).concat([x].concat(lst.slice(i)));}
+
 ;builtins["seq"] = function (n){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins seq)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(typeof n == "number")) {throw ("Argument is not number: "+"n");}
 var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
