@@ -69,8 +69,11 @@
                    ((let nodes (tree.map ser))
                     (return (+ "(" (nodes.join ",") ")")))))
            '(fun mapshape (fn shape)
-               (return (shape.map (fun nil (ln)
-                                    (return (ln.map fn))))))
+               (if (and (array? shape)
+                        (== shape.length 2)
+                        (number? shape[0]))
+                   ((return (fn shape)))
+                   ((return (shape.map (fun nil (x) (return (mapshape fn x))))))))
 
            '(fun trace (x)
                (console.log (json x))
