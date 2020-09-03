@@ -412,7 +412,7 @@ return Math.pow(before,after);}
 ;if (toks[0][0] == opstack[0][0]) {var varval = vars[toks[0][1]];if (typeof varval == "undefined") {throw ("Undefined function or variable: "+toks[0][1]);}
 if (toks.length == 1) {return varval;}
 if (typeof varval == "function") {return varval.apply(varval,toks.slice(1).map(self));}
-if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){return a[self(v)];}
+if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){return a[(self(v)-1)];}
 
 ,varval); } catch(exception) { throw("Wrong list element selection: "+printToks(toks)) }}else {throw ("Wrong expression"+printToks(toks));}
 }
@@ -496,18 +496,18 @@ console.log(code);code = code.map(x.lndn.printToks);x.src.value = code.join(";\n
          (seq 61))</textarea></div><p  >Available builtin functions:</p><ul  style="margin-left: 2ex" ><li  style="margin-bottom: 0.5em" ><span class="inline-code" >move point/shape vector</span> — move in space</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >rotate point/shape angle [base]</span> — rotate <span class="inline-code" >point/shape</span> by <span class="inline-code" >angle</span> (degrees) around <span class="inline-code" >base</span> point. If shape, <span class="inline-code" >base</span> is optional</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >map function list</span> — standard map function</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >seq limit</span> — return all non-negative integers smaller than <span class="inline-code" >limit</span></li></ul><h2  id="sample_code" >Sample code</h2><h3  id="koch_snowflake" >Koch Snowflake</h3><pre  ><code  >x = ((200,350),(500,350),(350,50),(200,350));
 
 divide = seg n -&gt; {
-   dx = seg 1 0 - seg 0 0;
-   dy = seg 1 1 - seg 0 1;
+   dx = seg 2 1 - seg 1 1;
+   dy = seg 2 2 - seg 1 2;
    stepx = dx / n;
    stepy = dy / n;
-   map {i -&gt; seg 0 0 + stepx * i, seg 0 1 + stepy * i}
+   map {i -&gt; seg 1 1 + stepx * i, seg 1 2 + stepy * i}
      (seq (n + 1))
 };
 
 koch = seg -&gt; {
     map {seg -&gt; {
         base = divide seg 3;
-        insert base 2 (rotate (base 2) (60) (base 1))
+        insert base 2 (rotate (base 3) (60) (base 2))
     }} (pairs seg)
 };
 

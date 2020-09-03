@@ -163,7 +163,7 @@
 	   ((try
 	      ((return (((toks.slice 1) reduce) 
 			    (fun nil (a v)
-			       (return (@[] a (self v))))
+			       (return (@[] a (- (self v) 1))))
 			    varval)))
 	      (throw (+ ,(txt 'wrong-arr-argv) (print-toks toks)))))
 	    ((throw (+ ,(txt 'wrong-expr)
