@@ -11,5 +11,8 @@
  (fun-list lista)
  (fun-map mapuj)
  (fun-insert wstaw)
+ (fun-pairs pary)
  (fun-seq odlicz)
+ (fun-repeat powtórz)
+ (fun-join łącz)
  (value-returned "Zwrócono wartość (nie kształt): "))

@@ -11,5 +11,8 @@
  (fun-list list)
  (fun-map map)
  (fun-insert insert)
+ (fun-pairs pairs)
+ (fun-repeat repeat)
+ (fun-join join)
  (fun-seq seq)
  (value-returned "Value returned (instead of shape): "))

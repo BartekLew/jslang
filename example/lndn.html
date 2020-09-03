@@ -200,6 +200,19 @@ if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
 if (!(typeof i == "number")) {throw ("Argument is not number: "+"i");}
 return lst.slice(0,i).concat([x].concat(lst.slice(i)));}
 
+;builtins["pairs"] = function (lst){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins pairs)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
+var acc = [];for(var i=0; i < (lst.length-1); i++) { acc.push([lst[i],lst[i+1]]); }return acc;}
+
+;builtins["repeat"] = function (initial, f, count){if (arguments.length != 3) {throw ("Wrong arguments count: "+"(builtins repeat)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(typeof f == "function")) {throw ("Argument is not function: "+"f");}
+if (!(typeof count == "number")) {throw ("Argument is not number: "+"count");}
+var ans = initial;for(var i=0; i<count; i++) { ans = f(ans); }return ans;}
+
+;builtins["join"] = function (x){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins join)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(x))) {throw ("Argument is not list: "+x);}
+var acc = [];for(var i in x) { acc = acc.concat(x[i]); }return acc;}
+
 ;builtins["seq"] = function (n){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins seq)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(typeof n == "number")) {throw ("Argument is not number: "+"n");}
 var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
