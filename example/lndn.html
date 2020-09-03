@@ -133,9 +133,10 @@ ul {
 We have programmable drawing space, we are drawing some shapes.</p><script  type="text/javascript" >function ser(tree){if (!(Array.isArray(tree))) {return tree;}else {var nodes = tree.map(ser);return ("("+nodes.join(",")+")");}
 }
 
-function mapshape(fn, shape){return shape.map(function (ln){return ln.map(fn);}
+function mapshape(fn, shape){if ((Array.isArray(shape) && shape.length == 2 && typeof shape[0] == "number")) {return fn(shape);}else {return shape.map(function (x){return mapshape(fn,x);}
 
 );}
+}
 
 function trace(x){console.log(JSON.stringify(x));return x;}
 
@@ -199,6 +200,11 @@ return lst.map(fn);}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
 if (!(typeof i == "number")) {throw ("Argument is not number: "+"i");}
 return lst.slice(0,i).concat([x].concat(lst.slice(i)));}
+
+;builtins["part"] = function (lst, start, end){if ((arguments.length < 2 || arguments.length > 3)) {throw ("Wrong arguments count: "+"(builtins part)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
+if (!(end)) {end = (lst.length+1);}
+return lst.slice((start-1),(end-1));}
 
 ;builtins["pairs"] = function (lst){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins pairs)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}

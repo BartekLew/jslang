@@ -11,6 +11,7 @@
  (fun-list list)
  (fun-map map)
  (fun-insert insert)
+ (fun-subseq part)
  (fun-pairs pairs)
  (fun-repeat repeat)
  (fun-join join)
