@@ -21,3 +21,31 @@ Available builtin functions:
     "`map function list` — standard map function"
     "`seq limit` — return all non-negative integers smaller than `limit`")
 @@@
+
+Sample code
+===========
+
+Koch Snowflake
+--------------
+
+```
+x = ((200,350),(500,350),(350,50),(200,350));
+
+divide = seg n -> {
+   dx = seg 1 0 - seg 0 0;
+   dy = seg 1 1 - seg 0 1;
+   stepx = dx / n;
+   stepy = dy / n;
+   map {i -> seg 0 0 + stepx * i, seg 0 1 + stepy * i}
+     (seq (n + 1))
+};
+
+koch = seg -> {
+    map {seg -> {
+        base = divide seg 3;
+        insert base 2 (rotate (base 2) (60) (base 1))
+    }} (pairs seg)
+};
+
+list (repeat x {x -> join (koch x)} 4)
+```
