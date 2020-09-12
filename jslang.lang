@@ -8,4 +8,6 @@
  (missing-brack-opn "Missing bracket opening: ")
  (missing-brack-cls "Unclosed bracket: ")
  (wrong-arr-argv "Wrong list element selection: ")
- (wrong-expr "Wrong expression"))
+ (wrong-expr "Wrong expression")
+ (err-in-call "Error while evaluating function »")
+ (err-in-call2 "«:\\n    "))

@@ -421,7 +421,7 @@ return Math.pow(before,after);}
 
 ;if (toks[0][0] == opstack[0][0]) {var varval = vars[toks[0][1]];if (typeof varval == "undefined") {throw ("Undefined function or variable: "+toks[0][1]);}
 if (toks.length == 1) {return varval;}
-if (typeof varval == "function") {return varval.apply(varval,toks.slice(1).map(self));}
+if (typeof varval == "function") {try { return varval.apply(varval,toks.slice(1).map(self)); } catch(exception) { throw ("Error while evaluating function »"+printToks(toks)+"«:\n    "+exception); }}
 if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){return a[(self(v)-1)];}
 
 ,varval); } catch(exception) { throw("Wrong list element selection: "+printToks(toks)) }}else {throw ("Wrong expression"+printToks(toks));}

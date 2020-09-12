@@ -8,4 +8,6 @@
  (missing-brack-opn "Zamknięcie nawiasu bez otwarcia: ")
  (missing-brack-cls "Niezamknięty nawias: ")
  (wrong-arr-argv "Błędny wybór wartości z listy: ")
- (wrong-expr "Błędne wyrażenie: "))
+ (wrong-expr "Błędne wyrażenie: ")
+ (err-in-call "Błąd poczas obliczania funkcji »")
+ (err-in-call2 "«:\\n    "))

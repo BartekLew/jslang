@@ -157,8 +157,13 @@
          (if (== toks.length 1)
             ((return varval)))
 	 (if (function? varval)
-            ((return (varval.apply varval (((toks.slice 1)
-                                           map) self)))))
+            ((try
+                ((return (varval.apply varval (((toks.slice 1)
+                                           map) self))))
+                ((throw (+ ,(txt 'err-in-call)
+                           (print-toks toks)
+                           ,(txt 'err-in-call2)
+                           exception))))))
 	 (if (array? varval)
 	   ((try
 	      ((return (((toks.slice 1) reduce) 
