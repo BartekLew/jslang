@@ -29,7 +29,11 @@
                  (= found 1)
                  (break))))
            (if (== found 0) ((throw (+ ,(txt 'unknown-element)
-                                        (src.slice 0 10))))))
+                                        (src.slice 0 10)
+                                       ,(txt 'unknown-element2)
+                                       (print-toks (if* (> acc.length 20)
+                                                      (acc.slice (- acc.length 20))
+                                                      acc)))))))
         (return acc)))
 
 (defun opstack (toks)
