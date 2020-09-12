@@ -166,6 +166,8 @@
                                             form)))
                              (,(txt 'fun-list) (&rest args)
                                 (return args))
+                             (,(txt 'fun-len) ((list lst))
+                                (return lst.length))
                              (,(txt 'fun-map) ((function fn) (list lst))
                                 (return (lst.map fn)))
                              (,(txt 'fun-insert) ((list lst) (number i) x)

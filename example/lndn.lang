@@ -9,6 +9,7 @@
  (fun-move move)
  (fun-rotate rotate)
  (fun-list list)
+ (fun-len length)
  (fun-map map)
  (fun-insert insert)
  (fun-subseq part)

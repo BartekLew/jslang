@@ -191,6 +191,10 @@ return mapshape(function (p){var x = (p[0]-base[0]);var y = (p[1]-base[1]);retur
 ;builtins["list"] = function (){if (arguments.length < 0) {throw ("Wrong arguments count: "+"(builtins list)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 var args = Object.keys(arguments).map(x => arguments[x]).slice(0);return args;}
 
+;builtins["length"] = function (lst){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins length)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
+return lst.length;}
+
 ;builtins["map"] = function (fn, lst){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins map)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(typeof fn == "function")) {throw ("Argument is not function: "+"fn");}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}

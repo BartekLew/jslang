@@ -9,6 +9,7 @@
  (fun-move przesuń)
  (fun-rotate obróć)
  (fun-list lista)
+ (fun-len długość)
  (fun-map mapuj)
  (fun-insert wstaw)
  (fun-subseq część)
