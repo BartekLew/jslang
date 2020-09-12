@@ -1,4 +1,5 @@
-((unknown-element "Unknown element starting: ")
+((unknown-element "Unknown element starting:\\n\\n")
+ (unknown-element2 "\\n  after:\\n\\n")
  (too-many-args "Excessive tokens: ")
  (var-undefined "Undefined function or variable: ")
  (val-expected-bfr "Value expected before: '")
