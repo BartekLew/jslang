@@ -1,10 +1,15 @@
+(defun errstack-point (toksym code)
+   `(try
+        ,code
+        ((throw (+ exception ,(txt 'err-in) (print-toks ,toksym))))))
+
 (defun lndn-vm (initial) 
   (let ((toks `((space ,(js-in-set? '_ " " "\\t" "\\n") ,(langignore))
                 (block-opn (== _ "{") ,(langskip))
                 (block-cls (== _ "}") ,(langbrack 'block-opn
                                          `((return (self (merge bracket code-block))))))
-                (stop (== _ ";") ,(langgenop '((pass before)
-                                           (return (self after)))))
+                (stop (== _ ";") ,(langgenop `(,(errstack-point 'before '((pass before)))
+                                               (return (self after)))))
                 (eql (== _ "=") ,(langgenop 
                                        `((if (or (!= before.length 1)
                                                  (!= before[0][0] word))
@@ -168,8 +173,16 @@
                                 (return args))
                              (,(txt 'fun-len) ((list lst))
                                 (return lst.length))
+                             (,(txt 'fun-count) ((function fn) (list lst))
+                                (let ans 0)
+                                (foreach (i lst)
+                                    (if (fn lst[i])
+                                      ((++ ans))))
+                                (return ans))
                              (,(txt 'fun-map) ((function fn) (list lst))
                                 (return (lst.map fn)))
+                             (,(txt 'fun-eq) (a b)
+                                (return (== a b)))
                              (,(txt 'fun-insert) ((list lst) (number i) x)
                                 (return (((lst.slice 0 i) concat)
                                              (((list x) concat) (lst.slice i)))))

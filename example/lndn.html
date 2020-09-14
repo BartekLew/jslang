@@ -195,10 +195,19 @@ var args = Object.keys(arguments).map(x => arguments[x]).slice(0);return args;}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
 return lst.length;}
 
+;builtins["count"] = function (fn, lst){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins count)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+if (!(typeof fn == "function")) {throw ("Argument is not function: "+"fn");}
+if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
+var ans = 0;for(var i in lst) { if (fn(lst[i])) {ans++;}
+ }return ans;}
+
 ;builtins["map"] = function (fn, lst){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins map)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(typeof fn == "function")) {throw ("Argument is not function: "+"fn");}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
 return lst.map(fn);}
+
+;builtins["equal"] = function (a, b){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins equal)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+return a == b;}
 
 ;builtins["insert"] = function (lst, i, x){if (arguments.length != 3) {throw ("Wrong arguments count: "+"(builtins insert)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
@@ -313,7 +322,7 @@ return before.concat([[type,value]],after);}
 ;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
 }
 
-;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));pass(before);return self(after);}
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));try { pass(before); } catch(exception) { throw (exception+"\nin:\n  "+printToks(before)); }return self(after);}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
 
 ],[4,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}

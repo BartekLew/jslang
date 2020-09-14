@@ -6,6 +6,7 @@
  (val-expected-aftr "Oczekiwano wartości po '")
  (type-conflict "Niezgodność typów:")
  (ve-in "' w: ")
+ (err-in "\\nw:\\n  ")
  (missing-brack-opn "Zamknięcie nawiasu bez otwarcia: ")
  (missing-brack-cls "Niezamknięty nawias: ")
  (wrong-arr-argv "Błędny wybór wartości z listy: ")

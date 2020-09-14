@@ -10,6 +10,8 @@
  (fun-rotate rotate)
  (fun-list list)
  (fun-len length)
+ (fun-count count)
+ (fun-eq equal)
  (fun-map map)
  (fun-insert insert)
  (fun-subseq part)

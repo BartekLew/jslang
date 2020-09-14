@@ -6,6 +6,7 @@
  (val-expected-aftr "Value expected after: '")
  (type-conflict "Conflicting types: ")
  (ve-in "' in: ")
+ (err-in "\\nin:\\n  ")
  (missing-brack-opn "Missing bracket opening: ")
  (missing-brack-cls "Unclosed bracket: ")
  (wrong-arr-argv "Wrong list element selection: ")

@@ -10,6 +10,8 @@
  (fun-rotate obróć)
  (fun-list lista)
  (fun-len długość)
+ (fun-count policz)
+ (fun-eq równe)
  (fun-map mapuj)
  (fun-insert wstaw)
  (fun-subseq część)
