@@ -216,8 +216,8 @@ return lst.slice(0,i).concat([x].concat(lst.slice(i)));}
 
 ;builtins["part"] = function (lst, start, end){if ((arguments.length < 2 || arguments.length > 3)) {throw ("Wrong arguments count: "+"(builtins part)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
-if (!(end)) {end = (lst.length+1);}
-return lst.slice((start-1),(end-1));}
+if (!(end)) {end = lst.length;}
+return lst.slice((start-1),end);}
 
 ;builtins["pairs"] = function (lst){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins pairs)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
