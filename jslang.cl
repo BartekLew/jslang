@@ -62,8 +62,11 @@
                       ((= vars {})))
   
                     (let toks (vm.lex code))
-                    (= vars (hashcat builtins vars))
+                    (foreach (i builtins)
+                        (= vars[i] builtins[i]))
                     (= (@[] vars "!opstack") vm.opstack)
+                    (= (@[] vars "!trace") {})
+                    (= (@[] vars "!callstack") [])
   
                     (return (vm.opstack[0][1] toks vm.opstack vars))))
       (return vm)))
@@ -80,6 +83,11 @@
         collect (let ((n (position x (mapcar #'first toks) :test #'equalp)))
                   (if n n
                     (if (listp+ x) (treesubs x toks) x)))))
+
+(defun call-frame (codesym action)
+    `((((@[] vars "!callstack") push) (print-toks ,codesym))
+      ,@action
+      (((@[] vars "!callstack") pop))))
 
 (defun langskip ()
   `(fun nil (toks opstack vars)
@@ -107,7 +115,9 @@
        ((throw (+ ,(txt 'too-many-args)
                   (print-toks toks)))))
      (let stack (@[] vars "!opstack"))
-     (return (stack[0][1] toks[0][1] stack vars))))
+     ,@(call-frame 'toks[0][1]
+          '((let ans (stack[0][1] toks[0][1] stack vars))))
+     (return ans)))
 
 (defun langnum ()
   `(fun nil (toks opstack vars)
@@ -160,25 +170,26 @@
                        toks[0][1]))))
          (if (== toks.length 1)
             ((return varval)))
-	 (if (function? varval)
-            ((try
-                ((return (varval.apply varval (((toks.slice 1)
-                                           map) self))))
-                ((throw (+ ,(txt 'err-in-call)
-                           (print-toks toks)
-                           ,(txt 'err-in-call2)
-                           exception))))))
-	 (if (array? varval)
-	   ((try
-	      ((return (((toks.slice 1) reduce) 
+	         (if (function? varval)
+               ((try
+                  ((let thisvar (hash (vars vars) (toks toks)))
+                   (return (varval.apply thisvar (((toks.slice 1)
+                                                   map) self))))
+                  ((throw (+ ,(txt 'err-in-call)
+                              (print-toks toks)
+                             ,(txt 'err-in-call2)
+                              exception))))))
+	     (if (array? varval)
+	       ((try
+	         ((return (((toks.slice 1) reduce) 
 			    (fun nil (a v)
 			       (return (@[] a (- (self v) 1))))
 			    varval)))
-	      (throw (+ ,(txt 'wrong-arr-argv) (print-toks toks)))))
-	    ((throw (+ ,(txt 'wrong-expr)
-		       (print-toks toks)))))))
+	         (throw (+ ,(txt 'wrong-arr-argv) (print-toks toks)))))
+	       ((throw (+ ,(txt 'wrong-expr)
+		               (print-toks toks)))))))
 
-        (return (opstack[1][1] toks (opstack.slice 1) vars))))
+     (return (opstack[1][1] toks (opstack.slice 1) vars))))
 
 (defun langgenop (action &key else reverse)
   (let ((locals `((let before (toks.slice 0 i))

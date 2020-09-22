@@ -150,6 +150,7 @@ function splitarr(test, arr){var ans = [];var last = [];for(var i in arr) { if (
 
 function lndn(){var vm = {};function printToks(arr, idx, all){if ((arguments.length < 1 || arguments.length > 3)) {throw ("Wrong arguments count: "+"print-toks"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 var lastp = 0;return arr.map(function (x){if (x[0] == 16) {return ser(x[1]);}
+if (x[0] == 15) {return (" {"+printToks(x[1])+" }");}
 if (((lastp > 8 && x[0] > 8) || (lastp > 8 && x[0] == 6) || (lastp == 7 && x[0] > 8))) {lastp = x[0];return (" "+x[1]);}else {lastp = x[0];return x[1];}
 }
 
@@ -208,6 +209,10 @@ return lst.map(fn);}
 
 ;builtins["equal"] = function (a, b){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins equal)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 return a == b;}
+
+;builtins["trace"] = function (val){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins trace)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+var stack = this.vars["!callstack"];var name = stack[(stack.length-1)];if (typeof this.vars["!trace"][name] == "undefined") {this.vars["!trace"][name] = [];}
+this.vars["!trace"][name].push(val);return val;}
 
 ;builtins["insert"] = function (lst, i, x){if (arguments.length != 3) {throw ("Wrong arguments count: "+"(builtins insert)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
@@ -364,7 +369,7 @@ var ans = pass(after);vars[before[0][1]] = ans;return ans;}
 ;var bracket = splitOnLast(before,6);var merge = function (value, type){if (typeof type == "undefined") {type = 16;}
 return before.concat([[type,value]],after);}
 
-;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];var ans = pass(bracket);if ((bracket.length == 1 && bracket[0][0] == 16)) {ans = [ans];}
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];vars["!callstack"].push(printToks(bracket));var ans = pass(bracket);vars["!callstack"].pop();if ((bracket.length == 1 && bracket[0][0] == 16)) {ans = [ans];}
 return self(merge(ans));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
 }
  }toks.map(function (x){if (x[0] == 6) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
@@ -430,7 +435,7 @@ return Math.pow(before,after);}
 
 ;if (toks[0][0] == opstack[0][0]) {var varval = vars[toks[0][1]];if (typeof varval == "undefined") {throw ("Undefined function or variable: "+toks[0][1]);}
 if (toks.length == 1) {return varval;}
-if (typeof varval == "function") {try { return varval.apply(varval,toks.slice(1).map(self)); } catch(exception) { throw ("Error while evaluating function »"+printToks(toks)+"«:\n    "+exception); }}
+if (typeof varval == "function") {try { var thisvar = {vars: vars,toks: toks};return varval.apply(thisvar,toks.slice(1).map(self)); } catch(exception) { throw ("Error while evaluating function »"+printToks(toks)+"«:\n    "+exception); }}
 if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){return a[(self(v)-1)];}
 
 ,varval); } catch(exception) { throw("Wrong list element selection: "+printToks(toks)) }}else {throw ("Wrong expression"+printToks(toks));}
@@ -443,24 +448,28 @@ return opstack[1][1](toks,opstack.slice(1),vars);}
 
 ],[15,function (toks, opstack, vars){if (!(toks[0][0] == opstack[0][0])) {return opstack[1][1](toks,opstack.slice(1),vars);}
 if (toks.length != 1) {throw ("Excessive tokens: "+printToks(toks));}
-var stack = vars["!opstack"];return stack[0][1](toks[0][1],stack,vars);}
+var stack = vars["!opstack"];vars["!callstack"].push(printToks(toks[0][1]));var ans = stack[0][1](toks[0][1],stack,vars);vars["!callstack"].pop();return ans;}
 
 ],[16,function (toks, opstack, vars){if (toks.length > 1) {throw ("Excessive tokens: "+printToks(toks));}
 return toks[0][1];}
 
 ]];vm.eval = function (code, vars){if (typeof vars == "undefined") {vars = {};}
-var toks = vm.lex(code);vars = Object.assign({}, builtins,vars);vars["!opstack"] = vm.opstack;return vm.opstack[0][1](toks,vm.opstack,vars);}
+var toks = vm.lex(code);for(var i in builtins) { vars[i] = builtins[i]; }vars["!opstack"] = vm.opstack;vars["!trace"] = {};vars["!callstack"] = [];return vm.opstack[0][1](toks,vm.opstack,vars);}
 
 ;return vm;}
 
 </script><div  style="width:100%; text-align: center;" ><script  type="text/javascript" >function onload_canvas_1(event){var x = document.getElementById("canvas_1");x.style.width = "100%";x.width = x.offsetWidth;x.height = (x.width*0.6);x.cpath = [];var writingLock = 0;x.lndn = lndn();var reloadAct = function (){writingLock++;setTimeout(function (){if (writingLock-- > 1) {return 0;}
-try { var startTime = new Date().getTime();var ans = x.lndn.eval(x.src.value);if (typeof ans == "undefined") {throw "...?";}
+try { var startTime = new Date().getTime();var vars = {};var ans = x.lndn.eval(x.src.value,vars);if (typeof ans == "undefined") {throw "...?";}
 try { ans.map(function (stroke){stroke.map(function (pt){if (!((pt.length == 2 && typeof pt[0] == "number" && typeof pt[1] == "number"))) {throw "Bad point";}
 }
 
 );}
 
-); } catch(exception) { throw ("Value returned (instead of shape): "+ser(ans)); }x.log = ans;x.refresh();x.status.innerText = ("OK ("+(new Date().getTime()-startTime)+"ms)"); } catch(exception) { x.status.innerText = exception; }}
+); } catch(exception) { throw ("Value returned (instead of shape): "+ser(ans)); }x.log = ans;x.refresh();var traces = Object.keys(vars["!trace"]).map(function (x){return (x+":\n\n"+vars["!trace"][x].map(function (x){return JSON.stringify(x);}
+
+).join(", "));}
+
+);x.status.innerText = ("OK ("+(new Date().getTime()-startTime)+"ms)\n"+traces.join("\n\n")); } catch(exception) { x.status.innerText = exception; }}
 
 ,1000);}
 

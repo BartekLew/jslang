@@ -34,7 +34,8 @@
                                                                            (hashcat vars args))))))))
                 (brack-opn (== _ "(") ,(langskip))
                 (brack-cls (== _ ")") ,(langbrack 'brack-opn
-                                         '((let ans (pass bracket))
+                                         `(,@(call-frame 'bracket
+                                                '((let ans (pass bracket))))
                                            ;each additional parenthesis pair
                                            ;creates list, so that we can
                                            ;denote list of list like ((1,1)) 
@@ -109,6 +110,11 @@
                         (call ((arr.map (fun nil (x)
                                            (if (== x[0] literal)
                                                ((return (ser x[1]))))
+
+                                           (if (== x[0] code-block)
+                                               ((return (+ " {"
+                                                           (print-toks x[1])
+                                                           " }"))))
      
                                            (if (or (and (> lastp cons) (> x[0] cons))
                                                    (and (> lastp cons) (== x[0] brack-opn))
@@ -183,6 +189,13 @@
                                 (return (lst.map fn)))
                              (,(txt 'fun-eq) (a b)
                                 (return (== a b)))
+                             (,(txt 'fun-trace) (val)
+                                (let stack (@[] this.vars "!callstack"))
+                                (let name (@[] stack (- stack.length 1)))
+                                (if (undef? (@[] this.vars "!trace" name))
+                                   ((= (@[] this.vars "!trace" name) [])))
+                                (((@[] this.vars "!trace" name) push) val)
+                                (return val))
                              (,(txt 'fun-insert) ((list lst) (number i) x)
                                 (return (((lst.slice 0 i) concat)
                                              (((list x) concat) (lst.slice i)))))
@@ -221,7 +234,8 @@
                                                      ((return 0)))
                                                   (try
                                                      ((let start-time (now))
-                                                      (let ans (x.lndn.eval x.src.value))
+                                                      (let vars {}) 
+                                                      (let ans (x.lndn.eval x.src.value vars))
                                                       (if (undef? ans)
                                                         ((throw "...?")))
                                                       (try
@@ -235,9 +249,22 @@
                                                                    
                                                       (= x.log ans)
                                                       (x.refresh)
-                                                      (= x.status.inner-text (+ "OK ("
-                                                                                (- (now) start-time)
-                                                                                "ms)")))
+
+                                                      (let traces (((keys (@[] vars "!trace")) map)
+                                                                    (fun nil (x)
+                                                                        (return (+ x ":\\n\\n"
+                                                                                   (((@[] vars
+                                                                                              "!trace"
+                                                                                              x)
+                                                                                     (map (fun nil (x)
+                                                                                            (return
+                                                                                                (json x))))
+                                                                                     join) ", "))))))
+
+                                                      (= x.status.inner-text
+                                                           (+ "OK (" (- (now) start-time) "ms)\\n"
+                                                                  (traces.join "\\n\\n"))))
+
                                                      ((= x.status.inner-text exception))))
                                                 1000)))
         

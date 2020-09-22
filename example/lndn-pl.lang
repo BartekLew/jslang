@@ -12,6 +12,7 @@
  (fun-len długość)
  (fun-count policz)
  (fun-eq równe)
+ (fun-trace śledź)
  (fun-map mapuj)
  (fun-insert wstaw)
  (fun-subseq część)

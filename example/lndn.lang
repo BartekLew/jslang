@@ -12,6 +12,7 @@
  (fun-len length)
  (fun-count count)
  (fun-eq equal)
+ (fun-trace trace)
  (fun-map map)
  (fun-insert insert)
  (fun-subseq part)
