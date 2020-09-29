@@ -11,6 +11,8 @@
  (fun-move move)
  (fun-rotate rotate)
  (fun-list list)
+ (fun-number number)
+ (fun-bool bool)
  (fun-len length)
  (fun-count count)
  (fun-eq equal)

@@ -45,7 +45,12 @@ Spiral
 ------
 
 ```
-spiral = center (radious > 0) (density > 1/60) -> {
+
+point = x -> equal (length x) 2
+           & x 1 : number
+           & x 2 : number;
+
+spiral = (center : point) (radious > 0) (density > 1/60) -> {
     d = 60 * density;
     dx = radious/d;
 

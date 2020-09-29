@@ -11,6 +11,8 @@
  (fun-move przesuń)
  (fun-rotate obróć)
  (fun-list lista)
+ (fun-number liczba)
+ (fun-bool bool)
  (fun-len długość)
  (fun-count policz)
  (fun-eq równe)
