@@ -6,6 +6,8 @@
  (wrong-rot-arg "Zły argument dla funkcji obróć: ")
  (unable-ovrd-code "Nie można nadpisać kodu: ")
  (no-js "Javascript nie działa!")
+ (wrong-par "Zła definicja parametru: ")
+ (invalid-arg "Argument nie spełnia warunku: ")
  (fun-move przesuń)
  (fun-rotate obróć)
  (fun-list lista)

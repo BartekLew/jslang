@@ -22,14 +22,37 @@
                                          (= (@[] vars before[0][1]) ans)
                                          (return ans))))
                 (lambda (== _ "->") ,(langgenop
-                                       `((before.map (fun nil (x)
-                                                       (if (!= x[0] word)
-                                                          ((throw (+ ,(txt 'wrong-argv)
-                                                                     (print-toks before)))))))
+                                       `((let al-opstack
+                                            (list (@[] opstack (- brack-cls lambda))
+                                                  (list literal
+                                                     (fun nil (toks opstack vars)
+                                                       (return toks)))))
+
+                                         (= before (al-opstack[0][1] before al-opstack vars))
+
+                                         (let conditions (before.filter (fun nil (x)
+                                                                           (return (== x[0] literal)))))
+
+                                         (= before (before.map (fun nil (x)
+                                                                  (if (== x[0] literal)
+                                                                    ((return x[1][0][1])))
+                                                                  (if (!= x[0] word)
+                                                                    ((throw (+ ,(txt 'wrong-par)
+                                                                               x[1]))))
+                                                                  (return x[1]))))
+
                                          (return (fun nil ()
                                                     (let args {})
                                                     (foreach (i before)
-                                                       (= args[before[i][1]] arguments[i]))
+                                                       (= args[before[i]] arguments[i]))
+
+                                                    (foreach (i conditions)
+                                                       (if (not (opstack[1][1] conditions[i][1]
+                                                                               (opstack.slice 1)
+                                                                               (hashcat vars args)))
+                                                           ((throw (+ ,(txt 'invalid-arg)
+                                                                      (print-toks conditions[i][1]))))))
+
                                                     (return (opstack[1][1] after (opstack.slice 1)
                                                                            (hashcat vars args))))))))
                 (brack-opn (== _ "(") ,(langskip))
@@ -44,7 +67,12 @@
                                               ((= ans (list ans))))
                                            (return (self (merge ans))))))
                 (cons (== _ ",") ,(langlist))
-		(plus (== _ "+") ,(langop `((let atyp (array? before))
+                (greater (== _ ">")
+                                 ,(langop `((if (or (not (number? before))
+                                                    (not (number? after)))
+                                                (return false))
+                                            (return (> before after)))))
+		        (plus (== _ "+") ,(langop `((let atyp (array? before))
                                           (let btyp (array? after))
                                           (if (and atyp btyp)
                                               ((return (before.concat after))))

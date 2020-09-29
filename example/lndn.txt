@@ -22,8 +22,45 @@ Available builtin functions:
     "`seq limit` — return all non-negative integers smaller than `limit`")
 @@@
 
-Sample code
-===========
+Samples
+=======
+
+Circle
+------
+
+```
+circle = center (radious > 0) -> {
+    list (
+        map {n -> rotate (center 1 + radious, center 2)
+                         (n * 6)
+                         center
+              }
+            (seq 61))
+};
+
+circle (340,220) 200
+```
+
+Spiral
+------
+
+```
+spiral = center (radious > 0) (density > 1/60) -> {
+    d = 60 * density;
+    dx = radious/d;
+
+    list (
+        map {n -> {
+               x = center 1 + n * dx;
+               rotate (x, center 2)
+                      (n * 6)
+                      center
+            }}
+            (seq d))
+};
+
+spiral (340,220) 200 30
+```
 
 Koch Snowflake
 --------------
@@ -49,3 +86,4 @@ koch = seg -> {
 
 list (repeat x {x -> join (koch x)} 4)
 ```
+

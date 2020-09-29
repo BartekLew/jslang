@@ -149,8 +149,8 @@ function splitarr(test, arr){var ans = [];var last = [];for(var i in arr) { if (
  }ans.push(last);return ans;}
 
 function lndn(){var vm = {};function printToks(arr, idx, all){if ((arguments.length < 1 || arguments.length > 3)) {throw ("Wrong arguments count: "+"print-toks"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
-var lastp = 0;return arr.map(function (x){if (x[0] == 16) {return ser(x[1]);}
-if (x[0] == 15) {return (" {"+printToks(x[1])+" }");}
+var lastp = 0;return arr.map(function (x){if (x[0] == 17) {return ser(x[1]);}
+if (x[0] == 16) {return (" {"+printToks(x[1])+" }");}
 if (((lastp > 8 && x[0] > 8) || (lastp > 8 && x[0] == 6) || (lastp == 7 && x[0] > 8))) {lastp = x[0];return (" "+x[1]);}else {lastp = x[0];return x[1];}
 }
 
@@ -268,6 +268,9 @@ var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
 ,function (src){if (src.slice(0,1) == ",") {return 1;}else {return 0;}
 }
 
+,function (src){if (src.slice(0,1) == ">") {return 1;}else {return 0;}
+}
+
 ,function (src){if (src.slice(0,1) == "+") {return 1;}else {return 0;}
 }
 
@@ -311,10 +314,10 @@ var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
 ;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var splitOnLast = function (toks, cls){for(var i = (toks.length-1); i>=0; i--) { if (toks[i][0] == cls) {return [toks.slice(0,i),toks.slice((i+1))];}
  }}
 
-;var bracket = splitOnLast(before,1);var merge = function (value, type){if (typeof type == "undefined") {type = 16;}
+;var bracket = splitOnLast(before,1);var merge = function (value, type){if (typeof type == "undefined") {type = 17;}
 return before.concat([[type,value]],after);}
 
-;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];return self(merge(bracket,15));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];return self(merge(bracket,16));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
 }
  }toks.map(function (x){if (x[0] == 1) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
 }
@@ -336,7 +339,7 @@ return before.concat([[type,value]],after);}
 ;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
 }
 
-;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));if ((before.length != 1 || before[0][0] != 13)) {throw ("Name expected, found: "+printToks(before));}
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));if ((before.length != 1 || before[0][0] != 14)) {throw ("Name expected, found: "+printToks(before));}
 if (!(typeof vars[before[0][1]] == "undefined")) {throw ("Overriding variable forbidden: "+printToks(toks));}
 var ans = pass(after);vars[before[0][1]] = ans;return ans;}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
@@ -347,10 +350,16 @@ var ans = pass(after);vars[before[0][1]] = ans;return ans;}
 ;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
 }
 
-;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));before.map(function (x){if (x[0] != 13) {throw ("Wrong argument list: "+printToks(before));}
-}
+;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var alOpstack = [opstack[(7-5)],[17,function (toks, opstack, vars){return toks;}
 
-);return function (){var args = {};for(var i in before) { args[before[i][1]] = arguments[i]; }return opstack[1][1](after,opstack.slice(1),Object.assign({}, vars,args));}
+]];before = alOpstack[0][1](before,alOpstack,vars);var conditions = before.filter(function (x){return x[0] == 17;}
+
+);before = before.map(function (x){if (x[0] == 17) {return x[1][0][1];}
+if (x[0] != 14) {throw ("Wrong parameter definition: "+x[1]);}
+return x[1];}
+
+);return function (){var args = {};for(var i in before) { args[before[i]] = arguments[i]; }for(var i in conditions) { if (!(opstack[1][1](conditions[i][1],opstack.slice(1),Object.assign({}, vars,args)))) {throw ("Invalid argument: "+printToks(conditions[i][1]));}
+ }return opstack[1][1](after,opstack.slice(1),Object.assign({}, vars,args));}
 
 ;}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
@@ -366,10 +375,10 @@ var ans = pass(after);vars[before[0][1]] = ans;return ans;}
 ;for(var istr in toks) { if (opclass == toks[istr][0]) {var i = parseInt(istr);var before = toks.slice(0,i);var after = toks.slice((i+1));var splitOnLast = function (toks, cls){for(var i = (toks.length-1); i>=0; i--) { if (toks[i][0] == cls) {return [toks.slice(0,i),toks.slice((i+1))];}
  }}
 
-;var bracket = splitOnLast(before,6);var merge = function (value, type){if (typeof type == "undefined") {type = 16;}
+;var bracket = splitOnLast(before,6);var merge = function (value, type){if (typeof type == "undefined") {type = 17;}
 return before.concat([[type,value]],after);}
 
-;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];vars["!callstack"].push(printToks(bracket));var ans = pass(bracket);vars["!callstack"].pop();if ((bracket.length == 1 && bracket[0][0] == 16)) {ans = [ans];}
+;if (!(typeof bracket == "undefined")) {before = bracket[0];bracket = bracket[1];vars["!callstack"].push(printToks(bracket));var ans = pass(bracket);vars["!callstack"].pop();if ((bracket.length == 1 && bracket[0][0] == 17)) {ans = [ans];}
 return self(merge(ans));}else {throw ("Missing bracket opening: "+printToks(toks.slice(0,(i+1))));}
 }
  }toks.map(function (x){if (x[0] == 6) {throw ("Unclosed bracket: "+printToks(toks.slice((i+0))));}
@@ -392,12 +401,24 @@ return opstack[1][1](toks,opstack.slice(1),vars);}
 
 ;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
 if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
+if ((!(typeof before == "number") || !(typeof after == "number"))) {returnfalse}
+return before > after;}
+ }return opstack[1][1](toks,opstack.slice(1),vars);}
+
+],[10,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+}
+
+;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
+}
+
+;for(var i = (toks.length-1); i >= 0; i--) { if (opclass == toks[i][0]) {var before = toks.slice(0,i);var after = toks.slice((i+1));before = self(before);after = pass(after);if (typeof before == "undefined") {throw ("Value expected before: '"+toks[i][1]+"' in: "+printToks(toks));}
+if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"' w: "+printToks(toks));}
 var atyp = Array.isArray(before);var btyp = Array.isArray(after);if ((atyp && btyp)) {return before.concat(after);}
 if (!((atyp || btyp))) {return (before+after);}
 throw ("Conflicting types: "+printToks(toks));}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[10,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+],[11,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
 }
 
 ;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
@@ -408,7 +429,7 @@ if (typeof before == "undefined") {return (-after);}else {return (before-after);
 }
  }return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[11,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+],[12,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
 }
 
 ;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
@@ -419,7 +440,7 @@ if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"'
 return eval((before+toks[i][1]+after));}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[12,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
+],[13,function (toks, opstack, vars){var opclass = opstack[0][0];var pass = function (toks){if (toks.length > 0) {return opstack[1][1](toks,opstack.slice(1),vars);}
 }
 
 ;var self = function (toks){if (toks.length > 0) {return opstack[0][1](toks,opstack,vars);}
@@ -430,7 +451,7 @@ if (typeof after == "undefined") {throw ("Value expected after: '"+toks[i][1]+"'
 return Math.pow(before,after);}
  }return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[13,function (toks, opstack, vars){var self = function (tok){if (Array.isArray(tok)) {return opstack[0][1]([tok],opstack,vars);}
+],[14,function (toks, opstack, vars){var self = function (tok){if (Array.isArray(tok)) {return opstack[0][1]([tok],opstack,vars);}
 }
 
 ;if (toks[0][0] == opstack[0][0]) {var varval = vars[toks[0][1]];if (typeof varval == "undefined") {throw ("Undefined function or variable: "+toks[0][1]);}
@@ -442,15 +463,15 @@ if (Array.isArray(varval)) {try { return toks.slice(1).reduce(function (a, v){re
 }
 return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[14,function (toks, opstack, vars){if (toks[0][0] == opstack[0][0]) {if (toks.length != 1) {throw ("Excessive tokens: "+printToks(toks));}
+],[15,function (toks, opstack, vars){if (toks[0][0] == opstack[0][0]) {if (toks.length != 1) {throw ("Excessive tokens: "+printToks(toks));}
 return parseInt(toks[0][1]);}
 return opstack[1][1](toks,opstack.slice(1),vars);}
 
-],[15,function (toks, opstack, vars){if (!(toks[0][0] == opstack[0][0])) {return opstack[1][1](toks,opstack.slice(1),vars);}
+],[16,function (toks, opstack, vars){if (!(toks[0][0] == opstack[0][0])) {return opstack[1][1](toks,opstack.slice(1),vars);}
 if (toks.length != 1) {throw ("Excessive tokens: "+printToks(toks));}
 var stack = vars["!opstack"];vars["!callstack"].push(printToks(toks[0][1]));var ans = stack[0][1](toks[0][1],stack,vars);vars["!callstack"].pop();return ans;}
 
-],[16,function (toks, opstack, vars){if (toks.length > 1) {throw ("Excessive tokens: "+printToks(toks));}
+],[17,function (toks, opstack, vars){if (toks.length > 1) {throw ("Excessive tokens: "+printToks(toks));}
 return toks[0][1];}
 
 ]];vm.eval = function (code, vars){if (typeof vars == "undefined") {vars = {};}
@@ -514,14 +535,37 @@ function onmouseup_canvas_1(event){var x = document.getElementById("canvas_1");x
 
 );code = splitarr(function (x){return x[0] == 3;}
 
-,code);var found = 0;for(var i in code) { if ((code[i][0][0] == 13 && code[i][0][1] == "MANUAL" && code[i][1][0] == 4)) {found = 1;code[i] = code[i].concat(x.lndn.lex(("+"+ser([x.cpath]))));}
+,code);var found = 0;for(var i in code) { if ((code[i][0][0] == 14 && code[i][0][1] == "MANUAL" && code[i][1][0] == 4)) {found = 1;code[i] = code[i].concat(x.lndn.lex(("+"+ser([x.cpath]))));}
  }if (!(found == 1)) {code.unshift(x.lndn.lex(("MANUAL="+ser([x.cpath]))));code[(code.length-1)] = code[(code.length-1)].concat(x.lndn.lex("+MANUAL"));}
 console.log(code);code = code.map(x.lndn.printToks);x.src.value = code.join(";\n"); } catch(exception) { throw ("Unable to override code: "+exception); }x.cpath = [];}
 
 </script><canvas  id="canvas_1" style="background-color:#ffffff;margin-top:0.5em;margin-bottom:0.5em;" onload="onload_canvas_1(event)" onmousedown="onmousedown_canvas_1(event)" onmousemove="onmousemove_canvas_1(event)" onmouseup="onmouseup_canvas_1(event)" >Error: no canvas support!</canvas><script  >onload_canvas_1(0);</script><div  id="canvas_1_status" style="font-size:0.8em" >Javascript doesn't work!</div><textarea  style="width:100%; height: 15em;
                                                      margin-bottom:1em" id="canvas_1_source" >list
   (map {x -> rotate (350,150) (x * 6) (350,250)}
-         (seq 61))</textarea></div><p  >Available builtin functions:</p><ul  style="margin-left: 2ex" ><li  style="margin-bottom: 0.5em" ><span class="inline-code" >move point/shape vector</span> — move in space</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >rotate point/shape angle [base]</span> — rotate <span class="inline-code" >point/shape</span> by <span class="inline-code" >angle</span> (degrees) around <span class="inline-code" >base</span> point. If shape, <span class="inline-code" >base</span> is optional</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >map function list</span> — standard map function</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >seq limit</span> — return all non-negative integers smaller than <span class="inline-code" >limit</span></li></ul><h2  id="sample_code" >Sample code</h2><h3  id="koch_snowflake" >Koch Snowflake</h3><pre  ><code  >x = ((200,350),(500,350),(350,50),(200,350));
+         (seq 61))</textarea></div><p  >Available builtin functions:</p><ul  style="margin-left: 2ex" ><li  style="margin-bottom: 0.5em" ><span class="inline-code" >move point/shape vector</span> — move in space</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >rotate point/shape angle [base]</span> — rotate <span class="inline-code" >point/shape</span> by <span class="inline-code" >angle</span> (degrees) around <span class="inline-code" >base</span> point. If shape, <span class="inline-code" >base</span> is optional</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >map function list</span> — standard map function</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >seq limit</span> — return all non-negative integers smaller than <span class="inline-code" >limit</span></li></ul><h2  id="samples" >Samples</h2><h3  id="circle" >Circle</h3><pre  ><code  >circle = center (radious &gt; 0) -&gt; {
+    list (
+        map {n -&gt; rotate (center 1 + radious, center 2)
+                         (n * 6)
+                         center
+              }
+            (seq 61))
+};
+
+circle (340,220) 200</code></pre><h3  id="spiral" >Spiral</h3><pre  ><code  >spiral = center (radious &gt; 0) (density &gt; 1/60) -&gt; {
+    d = 60 * density;
+    dx = radious/d;
+
+    list (
+        map {n -&gt; {
+               x = center 1 + n * dx;
+               rotate (x, center 2)
+                      (n * 6)
+                      center
+            }}
+            (seq d))
+};
+
+spiral (340,220) 200 30</code></pre><h3  id="koch_snowflake" >Koch Snowflake</h3><pre  ><code  >x = ((200,350),(500,350),(350,50),(200,350));
 
 divide = seg n -&gt; {
    dx = seg 2 1 - seg 1 1;

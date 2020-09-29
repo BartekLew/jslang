@@ -2,6 +2,8 @@
  (name-expected "Name expected, found: ")
  (var-override "Overriding variable forbidden: ")
  (wrong-argv "Wrong argument list: ")
+ (wrong-par "Wrong parameter definition: ")
+ (invalid-arg "Invalid argument: ")
  (rot-param3 "Parameter #3 is required when rotating points.")
  (wrong-rot-arg "Wrong argument for rotate function: ")
  (unable-ovrd-code "Unable to override code: ")
