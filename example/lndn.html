@@ -303,7 +303,7 @@ var ans = [];for(var i=0; i < n; i++) { ans.push(i); }return ans;}
 ,function (src){if (src.slice(0,1) == "-") {return 1;}else {return 0;}
 }
 
-,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!((_ == "*" || _ == "/"))) {return i;}
+,function (src){for(var i=0; i < src.length; i++) { var _ = src[i];if (!((_ == "*" || _ == "/" || _ == "%"))) {return i;}
  }return src.length;}
 
 ,function (src){if (src.slice(0,1) == "^") {return 1;}else {return 0;}

@@ -106,7 +106,7 @@
                                           ((return (- after)))
                                           ((return (- before after)))))
                                   :optional-before T))
-                (o2 ,(js-in-set? '_ "*" "/")
+                (o2 ,(js-in-set? '_ "*" "/" "%")
                       ,(langop `((return (eval (+ before toks[i][1] after))))))
                 (o3 (== _ "^")
                       ,(langop `((return (^ before after)))))
