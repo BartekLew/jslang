@@ -384,8 +384,10 @@ var ans = pass(after);vars[before[0][1]] = ans;return ans;}
 if (x[0] != 20) {throw ("Wrong parameter definition: "+x[1]);}
 return x[1];}
 
-);return function (){var args = {};for(var i in before) { args[before[i]] = arguments[i]; }for(var i in conditions) { if (!(opstack[1][1](conditions[i][1],opstack.slice(1),Object.assign({}, vars,args)))) {throw ("Invalid argument: "+printToks(conditions[i][1]));}
- }return opstack[1][1](after,opstack.slice(1),Object.assign({}, vars,args));}
+);var fallback;if ((after[0][0] == 22 && after.length > 1)) {fallback = self(after.slice(1));after = after.slice(0,1);}
+return function (){var args = {};for(var i in before) { args[before[i]] = arguments[i]; }try { for(var i in conditions) { if (!(opstack[1][1](conditions[i][1],opstack.slice(1),Object.assign({}, vars,args)))) {throw ("Invalid argument: "+printToks(conditions[i][1]));}
+ } } catch(exception) { var topExcep = exception;if (!(typeof fallback == "undefined")) {return fallback.apply(Object.keys(arguments).map(x => arguments[x]));}
+throw exception; }return opstack[1][1](after,opstack.slice(1),Object.assign({}, vars,args));}
 
 ;}
  }return opstack[1][1](toks,opstack.slice(1),vars);}

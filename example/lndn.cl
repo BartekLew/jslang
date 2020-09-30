@@ -41,20 +41,32 @@
                                                                                x[1]))))
                                                                   (return x[1]))))
 
-                                         (return (fun nil ()
-                                                    (let args {})
-                                                    (foreach (i before)
-                                                       (= args[before[i]] arguments[i]))
+                                         (let fallback)
+                                         (if (and (== after[0][0] code-block)
+                                                  (> after.length 1))
+                                            ((= fallback (self (after.slice 1)))
+                                             (= after (after.slice 0 1))))
 
-                                                    (foreach (i conditions)
-                                                       (if (not (opstack[1][1] conditions[i][1]
-                                                                               (opstack.slice 1)
-                                                                               (hashcat vars args)))
-                                                           ((throw (+ ,(txt 'invalid-arg)
-                                                                      (print-toks conditions[i][1]))))))
+                                         (return
+                                            (fun nil ()
+                                                (let args {})
+                                                (foreach (i before)
+                                                (= args[before[i]] arguments[i]))
 
-                                                    (return (opstack[1][1] after (opstack.slice 1)
-                                                                           (hashcat vars args))))))))
+                                                (try
+                                                   ((foreach (i conditions)
+                                                      (if (not (opstack[1][1] conditions[i][1]
+                                                                              (opstack.slice 1)
+                                                                              (hashcat vars args)))
+                                                          ((throw (+ ,(txt 'invalid-arg)
+                                                                     (print-toks conditions[i][1])))))))
+                                                   ((let top-excep exception)
+                                                    (if (not (undef? fallback))
+                                                      ((return (fallback.apply (values arguments)))))
+                                                    (throw exception)))
+
+                                                (return (opstack[1][1] after (opstack.slice 1)
+                                                                        (hashcat vars args))))))))
                 (brack-opn (== _ "(") ,(langskip))
                 (brack-cls (== _ ")") ,(langbrack 'brack-opn
                                          `(,@(call-frame 'bracket
