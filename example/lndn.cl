@@ -383,7 +383,8 @@
               base
               (list 
                 (!+ 'tag := "div" :& `("id" ,(format nil "~A_status" id)
-                                     "style" "font-size:0.8em") :< (txt 'no-js))
+                                     "style" "font-size:0.8em;max-height: 10em; overflow: auto")
+                         :< (txt 'no-js))
         
                 (!+ 'tag := "textarea" :& `("style" "width:100%; height: 15em;
                                                      margin-bottom:1em"
