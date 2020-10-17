@@ -41,6 +41,10 @@ circle = center (radious > 0) -> {
 circle (340,220) 200
 ```
 
+@@@
+(tryit)
+@@@
+
 Spiral
 ------
 
@@ -67,6 +71,10 @@ spiral = (center : point) (radious > 0) (density > 1/60) -> {
 spiral (340,220) 200 30
 ```
 
+@@@
+(tryit)
+@@@
+
 Koch Snowflake
 --------------
 
@@ -91,4 +99,8 @@ koch = seg -> {
 
 list (repeat x {x -> join (koch x)} 4)
 ```
+
+@@@
+(tryit)
+@@@
 

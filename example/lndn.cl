@@ -3,7 +3,7 @@
         ,code
         ((throw (+ exception ,(txt 'err-in) (print-toks ,toksym))))))
 
-(defun lndn-vm (initial) 
+(defun lndn-vm (initial &key omnipresent) 
   (let ((toks `((space ,(js-in-set? '_ " " "\\t" "\\n") ,(langignore))
                 (block-opn (== _ "{") ,(langskip))
                 (block-cls (== _ "}") ,(langbrack 'block-opn
@@ -237,6 +237,8 @@
                                     ((throw (+ ,(txt 'invalid-arg)
                                                ,(txt 'fun-bool) " " x))))
                                 (return true)) 
+                             (,(txt 'fun-floor) (n)
+                                (return (floor n)))
                              (,(txt 'fun-len) ((list lst))
                                 (return lst.length))
                              (,(txt 'fun-count) ((function fn) (list lst))
@@ -249,12 +251,15 @@
                                 (return (lst.map fn)))
                              (,(txt 'fun-eq) (a b)
                                 (return (== a b)))
-                             (,(txt 'fun-trace) (val)
+                             (,(txt 'fun-trace) (val &optional f)
+                                (let traceval val)
+                                (if (not (undef? f))
+                                    ((= traceval (f.apply val (list val)))))
                                 (let stack (@[] this.vars "!callstack"))
                                 (let name (@[] stack (- stack.length 1)))
                                 (if (undef? (@[] this.vars "!trace" name))
                                    ((= (@[] this.vars "!trace" name) [])))
-                                (((@[] this.vars "!trace" name) push) val)
+                                (((@[] this.vars "!trace" name) push) traceval)
                                 (return val))
                              (,(txt 'fun-insert) ((list lst) (number i) x)
                                 (return (((lst.slice 0 i) concat)
@@ -379,14 +384,30 @@
                                        (= x.src.value (code.join ";\\n")))
                                       ((throw (+ ,(txt 'unable-ovrd-code)
                                                  exception)))))))
-           (div "width:100%; text-align: center;"
-              base
-              (list 
-                (!+ 'tag := "div" :& `("id" ,(format nil "~A_status" id)
-                                     "style" "font-size:0.8em;max-height: 10em; overflow: auto")
-                         :< (txt 'no-js))
+           (!+ 'tag := "div" :& `("style" "width:100%; text-align: center"
+                                  "id" ,(format nil "div_~a" id))
+               :< (append
+                    base
+                    (list 
+                       (!+ 'tag := "div" :& `("id" ,(format nil "~A_status" id)
+                                              "style" "font-size:0.8em;max-height: 10em; overflow: auto")
+                           :< (txt 'no-js))
         
-                (!+ 'tag := "textarea" :& `("style" "width:100%; height: 15em;
-                                                     margin-bottom:1em"
-                                            "id" ,(format nil "~A_source" id))
-                    :< initial)))))))
+                       (!+ 'tag := "textarea" :& `("style" "width:100%; height: 15em;
+                                                            margin-bottom:1em"
+                                                   "id" ,(format nil "~A_source" id))
+                           :< initial))))))))
+
+(defun tryit ()
+  (!+ 'tag := "p" :& '("onclick" "movevm(event)"
+                       "style" "text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer")
+    :< (txt 'tryit)))
+
+(defvar **home-modinit
+  (lambda ()
+    (js '(fun movevm (event)
+            (let vm (by-id "div_canvas_1"))
+            (let newpos event.target)
+            (vm.parent-element.remove-child vm)
+            (newpos.parent-element.insert-before
+                vm newpos.next-sibling)))))

@@ -24,4 +24,6 @@
  (fun-seq odlicz)
  (fun-repeat powtórz)
  (fun-join łącz)
- (value-returned "Zwrócono wartość (nie kształt): "))
+ (fun-floor jedności)
+ (value-returned "Zwrócono wartość (nie kształt): ")
+ (tryit "wypróbuj!"))

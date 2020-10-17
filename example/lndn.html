@@ -1,5 +1,4 @@
-<html  ><head  ><title  >Language not deserving name ;)</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta property="og:image" content="NIL" /><style  type="text/css" >
-body {
+<html  ><head  ><title  >Language not deserving name ;)</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta property="og:image" content="NIL" /><style  type="text/css" >body {
 	background-color: #d0f0d0;
 	color: #000080
 }
@@ -130,7 +129,9 @@ ul {
 	margin: 0em
 }
 </style></head><body  ><div  id="art" ><h1  >Language not deserving name ;)</h1><p  >A sample language, I've been developing for educational purposes.
-We have programmable drawing space, we are drawing some shapes.</p><script  type="text/javascript" >function ser(tree){if (!(Array.isArray(tree))) {return tree;}else {var nodes = tree.map(ser);return ("("+nodes.join(",")+")");}
+We have programmable drawing space, we are drawing some shapes.</p><script  type="text/javascript" >function movevm(event){var vm = document.getElementById("div_canvas_1");var newpos = event.target;vm.parentElement.removeChild(vm);newpos.parentElement.insertBefore(vm,newpos.nextSibling);}
+
+</script><script  type="text/javascript" >function ser(tree){if (!(Array.isArray(tree))) {return tree;}else {var nodes = tree.map(ser);return ("("+nodes.join(",")+")");}
 }
 
 function mapshape(fn, shape){if ((Array.isArray(shape) && shape.length == 2 && typeof shape[0] == "number")) {return fn(shape);}else {return shape.map(function (x){return mapshape(fn,x);}
@@ -200,6 +201,9 @@ return true;}
 if (!(typeof x == "boolean")) {throw ("Invalid argument: "+bool+" "+x);}
 return true;}
 
+;builtins["floor"] = function (n){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins floor)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+return Math.floor(n);}
+
 ;builtins["length"] = function (lst){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins length)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
 return lst.length;}
@@ -218,9 +222,10 @@ return lst.map(fn);}
 ;builtins["equal"] = function (a, b){if (arguments.length != 2) {throw ("Wrong arguments count: "+"(builtins equal)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 return a == b;}
 
-;builtins["trace"] = function (val){if (arguments.length != 1) {throw ("Wrong arguments count: "+"(builtins trace)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+;builtins["trace"] = function (val, f){if ((arguments.length < 1 || arguments.length > 2)) {throw ("Wrong arguments count: "+"(builtins trace)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
+var traceval = val;if (!(typeof f == "undefined")) {traceval = f.apply(val,[val]);}
 var stack = this.vars["!callstack"];var name = stack[(stack.length-1)];if (typeof this.vars["!trace"][name] == "undefined") {this.vars["!trace"][name] = [];}
-this.vars["!trace"][name].push(val);return val;}
+this.vars["!trace"][name].push(traceval);return val;}
 
 ;builtins["insert"] = function (lst, i, x){if (arguments.length != 3) {throw ("Wrong arguments count: "+"(builtins insert)"+": "+Object.keys(arguments).map(x => arguments[x]).join(", "));}
 if (!(Array.isArray(lst))) {throw ("Argument is not list: "+lst);}
@@ -578,7 +583,7 @@ var toks = vm.lex(code);for(var i in builtins) { vars[i] = builtins[i]; }vars["!
 
 ;return vm;}
 
-</script><div  style="width:100%; text-align: center;" ><script  type="text/javascript" >function onload_canvas_1(event){var x = document.getElementById("canvas_1");x.style.width = "100%";x.width = x.offsetWidth;x.height = (x.width*0.6);x.cpath = [];var writingLock = 0;x.lndn = lndn();var reloadAct = function (){writingLock++;setTimeout(function (){if (writingLock-- > 1) {return 0;}
+</script><div  style="width:100%; text-align: center" id="div_canvas_1" ><script  type="text/javascript" >function onload_canvas_1(event){var x = document.getElementById("canvas_1");x.style.width = "100%";x.width = x.offsetWidth;x.height = (x.width*0.6);x.cpath = [];var writingLock = 0;x.lndn = lndn();var reloadAct = function (){writingLock++;setTimeout(function (){if (writingLock-- > 1) {return 0;}
 try { var startTime = new Date().getTime();var vars = {};var ans = x.lndn.eval(x.src.value,vars);if (typeof ans == "undefined") {throw "...?";}
 try { ans.map(function (stroke){stroke.map(function (pt){if (!((pt.length == 2 && typeof pt[0] == "number" && typeof pt[1] == "number"))) {throw "Bad point";}
 }
@@ -639,7 +644,7 @@ function onmouseup_canvas_1(event){var x = document.getElementById("canvas_1");x
 console.log(code);code = code.map(x.lndn.printToks);x.src.value = code.join(";\n"); } catch(exception) { throw ("Unable to override code: "+exception); }x.cpath = [];}
 
 </script><canvas  id="canvas_1" style="background-color:#ffffff;margin-top:0.5em;margin-bottom:0.5em;" onload="onload_canvas_1(event)" onmousedown="onmousedown_canvas_1(event)" onmousemove="onmousemove_canvas_1(event)" onmouseup="onmouseup_canvas_1(event)" >Error: no canvas support!</canvas><script  >onload_canvas_1(0);</script><div  id="canvas_1_status" style="font-size:0.8em;max-height: 10em; overflow: auto" >Javascript doesn't work!</div><textarea  style="width:100%; height: 15em;
-                                                     margin-bottom:1em" id="canvas_1_source" >list
+                                                            margin-bottom:1em" id="canvas_1_source" >list
   (map {x -> rotate (350,150) (x * 6) (350,250)}
          (seq 61))</textarea></div><p  >Available builtin functions:</p><ul  style="margin-left: 2ex" ><li  style="margin-bottom: 0.5em" ><span class="inline-code" >move point/shape vector</span> — move in space</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >rotate point/shape angle [base]</span> — rotate <span class="inline-code" >point/shape</span> by <span class="inline-code" >angle</span> (degrees) around <span class="inline-code" >base</span> point. If shape, <span class="inline-code" >base</span> is optional</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >map function list</span> — standard map function</li><li  style="margin-bottom: 0.5em" ><span class="inline-code" >seq limit</span> — return all non-negative integers smaller than <span class="inline-code" >limit</span></li></ul><h2  id="samples" >Samples</h2><h3  id="circle" >Circle</h3><pre  ><code  >circle = center (radious &gt; 0) -&gt; {
     list (
@@ -650,7 +655,7 @@ console.log(code);code = code.map(x.lndn.printToks);x.src.value = code.join(";\n
             (seq 61))
 };
 
-circle (340,220) 200</code></pre><h3  id="spiral" >Spiral</h3><pre  ><code  >point = x -&gt; equal (length x) 2
+circle (340,220) 200</code></pre><p  onclick="movevm(event)" style="text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer" >try it!</p><h3  id="spiral" >Spiral</h3><pre  ><code  >point = x -&gt; equal (length x) 2
            &amp; x 1 : number
            &amp; x 2 : number;
 
@@ -668,7 +673,7 @@ spiral = (center : point) (radious &gt; 0) (density &gt; 1/60) -&gt; {
             (seq d))
 };
 
-spiral (340,220) 200 30</code></pre><h3  id="koch_snowflake" >Koch Snowflake</h3><pre  ><code  >x = ((200,350),(500,350),(350,50),(200,350));
+spiral (340,220) 200 30</code></pre><p  onclick="movevm(event)" style="text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer" >try it!</p><h3  id="koch_snowflake" >Koch Snowflake</h3><pre  ><code  >x = ((200,350),(500,350),(350,50),(200,350));
 
 divide = seg n -&gt; {
    dx = seg 2 1 - seg 1 1;
@@ -686,4 +691,4 @@ koch = seg -&gt; {
     }} (pairs seg)
 };
 
-list (repeat x {x -&gt; join (koch x)} 4)</code></pre></div><div  id="footer" ><span style="display:inline-block; transform:rotate(180deg)" >&copy;</span>Lew 2020<br/><a href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a></div></body></html>
+list (repeat x {x -&gt; join (koch x)} 4)</code></pre><p  onclick="movevm(event)" style="text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer" >try it!</p></div><div  id="footer" ><span style="display:inline-block; transform:rotate(180deg)" >&copy;</span>Lew 2020<br/><a href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a></div></body></html>

@@ -24,4 +24,6 @@
  (fun-repeat repeat)
  (fun-join join)
  (fun-seq seq)
- (value-returned "Value returned (instead of shape): "))
+ (fun-floor floor)
+ (value-returned "Value returned (instead of shape): ")
+ (tryit "try it!"))
