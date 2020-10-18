@@ -691,4 +691,11 @@ koch = seg -&gt; {
     }} (pairs seg)
 };
 
-list (repeat x {x -&gt; join (koch x)} 4)</code></pre><p  onclick="movevm(event)" style="text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer" >try it!</p></div><div  id="footer" ><span style="display:inline-block; transform:rotate(180deg)" >&copy;</span>Lew 2020<br/><a href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a></div></body></html>
+list (repeat x {x -&gt; join (koch x)} 4)</code></pre><p  onclick="movevm(event)" style="text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer" >try it!</p><h3  id="star" >Star</h3><pre  ><code  >list
+  (map { n -&gt; {
+             dx = n : {(x % 2 &gt; 0) -&gt; {50}
+                        x          -&gt; {-50} };
+             rotate (200 + dx,220)
+                   (n * 6)
+                   (350,220) }}
+         (seq 61))</code></pre><p  onclick="movevm(event)" style="text-align:right; position:relative; top:-1em;font-weight: bold; cursor:pointer" >try it!</p></div><div  id="footer" ><span style="display:inline-block; transform:rotate(180deg)" >&copy;</span>Lew 2020<br/><a href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a></div></body></html>

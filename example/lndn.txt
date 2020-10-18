@@ -104,3 +104,20 @@ list (repeat x {x -> join (koch x)} 4)
 (tryit)
 @@@
 
+Star
+----
+
+```
+list
+  (map { n -> {
+             dx = n : {(x % 2 > 0) -> {50}
+                        x          -> {-50} };
+             rotate (200 + dx,220)
+                   (n * 6)
+                   (350,220) }}
+         (seq 61))
+```
+
+@@@
+(tryit)
+@@@
